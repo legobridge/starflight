@@ -103,10 +103,11 @@ public class PlayerControl : MonoBehaviour {
         playerRB.velocity = Vector3.zero;
         playerRB.useGravity = false;
         playerRB.constraints = RigidbodyConstraints.FreezeAll;
+        // Todo: do this for all rigid bodies 
         if (safe) {
             GameOverText.text = "You Win!";
         } else {
-            GameOverText.text = "OOPS";
+            GameOverText.text = "You Lose";
         }
     }
 
@@ -162,15 +163,6 @@ public class PlayerControl : MonoBehaviour {
 
     private void OnCollisionEnter(Collision collision)
     {
-        LandingPlatform landingPlatform = collision.collider.GetComponent<LandingPlatform>();
-        if (landingPlatform != null) 
-        { 
-            if (collision.relativeVelocity.y <= landingPlatform.MaxLandingSpeed)
-            {
-                OnGameOver(true);
-                return;
-            }
-        }
         OnGameOver(false);
     }
 }
