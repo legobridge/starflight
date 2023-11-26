@@ -161,9 +161,16 @@ public class PlayerControl : MonoBehaviour
 
     private void Fire()
     {
-        var bulletPos = transform.position + transform.forward;
+        FireBullet(transform.position - transform.right);
+        FireBullet(transform.position + transform.right);
+    }
+
+    private void FireBullet(Vector3 position)
+    {
+        Ray ray = Camera.main.ScreenPointToRay(new Vector2(Screen.width / 2, Screen.height / 2));
+        var bulletPos = position + ray.direction;
         var bullet = Instantiate(BulletPrefab, bulletPos, Quaternion.identity);
-        bullet.GetComponent<Rigidbody>().velocity = BulletVelocity * transform.forward; // TODO: aim at the centre of screen
+        bullet.GetComponent<Rigidbody>().velocity = BulletVelocity * ray.direction + playerRB.velocity;
     }
 
     private void FixedUpdate()
