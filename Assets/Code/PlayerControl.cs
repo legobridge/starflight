@@ -123,7 +123,7 @@ public class PlayerControl : MonoBehaviour
     /// Show game-over display
     /// </summary>
     /// <param name="safe">True if we won, false if we crashed</param>
-    private void OnGameOver(bool safe) {
+    public void OnGameOver(bool safe) {
         var rigidBodies = FindObjectsOfType<Rigidbody>();
         foreach (var rb in rigidBodies)
         {
