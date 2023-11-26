@@ -161,8 +161,8 @@ public class PlayerControl : MonoBehaviour
 
     private void Fire()
     {
-        FireBullet(transform.position - transform.right);
-        FireBullet(transform.position + transform.right);
+        FireBullet(transform.position - transform.right / 2);
+        FireBullet(transform.position + transform.right / 2);
     }
 
     private void FireBullet(Vector3 position)
@@ -191,15 +191,7 @@ public class PlayerControl : MonoBehaviour
         var thrustForce = transform.forward * thrust;
 
         // Aerodynamics
-        Collider[] hitColliders = Physics.OverlapSphere(transform.position, 2, LayerMask.GetMask("Updrafts"));
-        if (hitColliders.Length != 0)
-        {
-            windVelocity = FindObjectOfType<Updraft>().WindVelocity;
-        }
-        else
-        {
-            windVelocity = new Vector3(0, 0, 0);
-        }
+        windVelocity = new Vector3(0, 0, 0);
         Vector3 playerMinusWindVelocity = playerRB.velocity - windVelocity;
 
         float vFwd = Vector3.Dot(playerMinusWindVelocity, transform.forward);
@@ -214,6 +206,10 @@ public class PlayerControl : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        OnGameOver(false);
+        if (collision.collider.GetComponent<BulletBehavior>() == null)
+        {
+            // TODO: sounds and effects
+            OnGameOver(false);
+        }
     }
 }
