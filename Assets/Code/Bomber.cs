@@ -1,4 +1,6 @@
+using System;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class Bomber : MonoBehaviour
 {
@@ -19,35 +21,36 @@ public class Bomber : MonoBehaviour
     public int MaxHitPoints = 25;
     public int DamageTakenPerHit = 5;
 
+    // Bombing
+    public GameObject BombPrefab;
+
     private Rigidbody npcRB;
+    private Rigidbody battleshipRB;
     private float yaw, pitch, roll, thrust;
     private int _remainingHp;
-    private bool _isCrashing;
+    private bool _hasBombDropped = false;
+    private bool _isCrashing = false;
 
     void Start()
     {
         npcRB = GetComponent<Rigidbody>();
         npcRB.velocity = transform.forward * 3;
+        battleshipRB = FindObjectOfType<Battleship>().gameObject.GetComponent<Rigidbody>();
         _remainingHp = MaxHitPoints;
     }
 
-    void FixedUpdate()
+    private void HandleMovement()
     {
         if (!_isCrashing)
         {
             Vector3 localTarget = transform.InverseTransformPoint(target.position);
 
-            // Check if the plane has crossed the target
-            bool hasCrossedTarget = localTarget.z < 0;
-
-            if (!hasCrossedTarget)
+            if (!_hasBombDropped)
             {
-                // Automated control inputs based on the target's position
+                // If target hasn't been bombed yet, fly towards it
                 var rollCorrection = Mathf.Atan(localTarget.x / -localTarget.z) * Mathf.Rad2Deg;
-                //Debug.Log(rollCorrection);
                 float targetRoll = Mathf.Clamp(rollCorrection, -RollRange, RollRange);
-                float targetPitch = Mathf.Clamp(-localTarget.y * PitchRange, -PitchRange, PitchRange);
-                // TODO: Fly towards sky above battleship
+                float targetPitch = Mathf.Clamp(-localTarget.y, -PitchRange, PitchRange);
 
                 roll = Mathf.Lerp(roll, targetRoll, LerpWeight);
                 pitch = Mathf.Lerp(pitch, targetPitch, LerpWeight);
@@ -56,7 +59,7 @@ public class Bomber : MonoBehaviour
             }
             else
             {
-                // Once the target is crossed, keep the plane flying straight ahead
+                // Once the target is bombed, keep the plane flying straight ahead
                 roll = Mathf.Lerp(roll, 0, LerpWeight);
                 pitch = Mathf.Lerp(pitch, 0, LerpWeight);
             }
@@ -82,6 +85,26 @@ public class Bomber : MonoBehaviour
         var liftForce = transform.up * LiftCoefficient * Mathf.Pow(vFwd, 2);
 
         npcRB.AddForce(thrustForce + fwdDragForce + upDragForce + liftForce);
+    }
+
+    private void HandleBombing()
+    {
+        bool battleshipInRange = Vector2.Distance(new Vector2(transform.position.x, transform.position.y),
+            new Vector2(battleshipRB.transform.position.x, battleshipRB.transform.position.y)) < 20;
+        if (!_hasBombDropped && battleshipInRange)
+        {
+            var bombPos = transform.position - 3 * transform.up;
+            var bomb = Instantiate(BombPrefab, bombPos, Quaternion.Euler(100, 0, 0));
+            bomb.GetComponent<Rigidbody>().velocity = npcRB.velocity;
+            _hasBombDropped = true;
+        }
+    }
+
+    void FixedUpdate()
+    {
+        HandleMovement();
+
+        HandleBombing();
     }
 
     private void TakeHit()
