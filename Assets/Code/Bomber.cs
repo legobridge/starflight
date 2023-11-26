@@ -6,7 +6,7 @@ using static UnityEngine.GraphicsBuffer;
 public class Bomber : MonoBehaviour
 {
 
-    public Transform target; // Assign the target in the inspector
+    //public Transform target; // Assign the target in the inspector
 
     // Aerodynamic coefficients and movement speeds
     public float ForwardDragCoefficient = 0.01f;
@@ -28,44 +28,15 @@ public class Bomber : MonoBehaviour
         npcRB.velocity = transform.forward * 3;
     }
 
-    //void FixedUpdate()
-    //{
-    //    Vector3 targetDirection = (target.position - transform.position).normalized;
-    //    Vector3 localTarget = transform.InverseTransformPoint(target.position);
-
-    //    // Automated control inputs based on the target's position
-    //    float targetRoll = Mathf.Clamp(-localTarget.x * RollRange, -RollRange, RollRange);
-    //    float targetPitch = Mathf.Clamp(-localTarget.y * PitchRange, -PitchRange, PitchRange);
-
-    //    roll = Mathf.Lerp(roll, targetRoll, LerpWeight);
-    //    pitch = Mathf.Lerp(pitch, targetPitch, LerpWeight);
-
-    //    // Calculate yaw difference and adjust
-    //    float targetYaw = Mathf.Atan2(localTarget.x, localTarget.z) * Mathf.Rad2Deg;
-    //    yaw = Mathf.Lerp(yaw, targetYaw, LerpWeight);
-
-    //    npcRB.MoveRotation(Quaternion.Euler(new Vector3(pitch, yaw, roll)));
-
-    //    // Adjust thrust based on distance and direction to target
-    //    thrust = Mathf.Clamp(Vector3.Distance(transform.position, target.position), 0, MaximumThrust);
-    //    Vector3 thrustForce = transform.forward * thrust;
-
-    //    // Aerodynamic forces
-    //    Vector3 npcMinusWindVelocity = npcRB.velocity - windVelocity;
-    //    float vFwd = Vector3.Dot(npcMinusWindVelocity, transform.forward);
-    //    float vUp = Vector3.Dot(npcMinusWindVelocity, transform.up);
-
-    //    var fwdDragForce = -Mathf.Sign(vFwd) * transform.forward * ForwardDragCoefficient * Mathf.Pow(vFwd, 2);
-    //    var upDragForce = -Mathf.Sign(vUp) * transform.up * VerticalDragCoefficient * Mathf.Pow(vUp, 2);
-    //    var liftForce = transform.up * LiftCoefficient * Mathf.Pow(vFwd, 2);
-
-    //    npcRB.AddForce(thrustForce + fwdDragForce + upDragForce + liftForce);
-    //}
+    
 
     void FixedUpdate()
     {
-        Vector3 localTarget = transform.InverseTransformPoint(target.position);
-
+        var target = FindObjectOfType<Battleship>();
+        Vector3 modifiedTargetPosition = target.transform.position;
+        modifiedTargetPosition.y += 70;
+        Vector3 localTarget = transform.InverseTransformPoint(modifiedTargetPosition);
+   
         // Check if the plane has crossed the target
         bool hasCrossedTarget = localTarget.z < 0;
 
