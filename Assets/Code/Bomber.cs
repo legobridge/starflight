@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
 
 public class Bomber : MonoBehaviour
 {
@@ -18,50 +15,60 @@ public class Bomber : MonoBehaviour
     public float MaximumThrust = 20f;
     public float LerpWeight = 0.01f;
 
+    // HP
+    public int MaxHitPoints = 25;
+    public int DamageTakenPerHit = 5;
+
     private Rigidbody npcRB;
     private float yaw, pitch, roll, thrust;
-    //private Vector3 windVelocity = new Vector3(0, 0, 0);
+    private int _remainingHp;
+    private bool _isCrashing;
 
     void Start()
     {
         npcRB = GetComponent<Rigidbody>();
         npcRB.velocity = transform.forward * 3;
+        _remainingHp = MaxHitPoints;
     }
-
     
-
     void FixedUpdate()
     {
-        var target = FindObjectOfType<Battleship>();
-        Vector3 modifiedTargetPosition = target.transform.position;
-        modifiedTargetPosition.y += 70;
-        Vector3 localTarget = transform.InverseTransformPoint(modifiedTargetPosition);
-   
-        // Check if the plane has crossed the target
-        bool hasCrossedTarget = localTarget.z < 0;
-
-        if (!hasCrossedTarget)
+        if (!_isCrashing)
         {
-            // Automated control inputs based on the target's position
-            var rollCorrection = Mathf.Atan(localTarget.x / -localTarget.z) * Mathf.Rad2Deg;
-            //Debug.Log(rollCorrection);
-            float targetRoll = Mathf.Clamp(rollCorrection, -RollRange, RollRange);
-            float targetPitch = Mathf.Clamp(-localTarget.y * PitchRange, -PitchRange, PitchRange);
-            // TODO: Fly towards sky above battleship
-         
-            roll = Mathf.Lerp(roll, targetRoll, LerpWeight);
-            pitch = Mathf.Lerp(pitch, targetPitch, LerpWeight);
+            var target = FindObjectOfType<Battleship>();
+            Vector3 modifiedTargetPosition = target.transform.position;
+            modifiedTargetPosition.y += 70;
+            Vector3 localTarget = transform.InverseTransformPoint(modifiedTargetPosition);
+            Vector3 localTarget = transform.InverseTransformPoint(target.position);
 
-            // Calculate yaw difference and adjust
-            float targetYaw = Mathf.Atan2(localTarget.x, localTarget.z) * Mathf.Rad2Deg;
-            yaw = Mathf.Lerp(yaw, targetYaw, LerpWeight);
+            // Check if the plane has crossed the target
+            bool hasCrossedTarget = localTarget.z < 0;
+
+            if (!hasCrossedTarget)
+            {
+                // Automated control inputs based on the target's position
+                var rollCorrection = Mathf.Atan(localTarget.x / -localTarget.z) * Mathf.Rad2Deg;
+                //Debug.Log(rollCorrection);
+                float targetRoll = Mathf.Clamp(rollCorrection, -RollRange, RollRange);
+                float targetPitch = Mathf.Clamp(-localTarget.y * PitchRange, -PitchRange, PitchRange);
+                // TODO: Fly towards sky above battleship
+
+                roll = Mathf.Lerp(roll, targetRoll, LerpWeight);
+                pitch = Mathf.Lerp(pitch, targetPitch, LerpWeight);
+                float targetYaw = Mathf.Atan2(localTarget.x, localTarget.z) * Mathf.Rad2Deg;
+                yaw = Mathf.Lerp(yaw, targetYaw, LerpWeight);
+            }
+            else
+            {
+                // Once the target is crossed, keep the plane flying straight ahead
+                roll = Mathf.Lerp(roll, 0, LerpWeight);
+                pitch = Mathf.Lerp(pitch, 0, LerpWeight);
+            }
         }
         else
         {
-            // Once the target is crossed, keep the plane flying straight ahead
-            roll = Mathf.Lerp(roll, 0, LerpWeight);
-            pitch = Mathf.Lerp(pitch, 0, LerpWeight);
-            yaw = Mathf.Lerp(yaw, transform.eulerAngles.y, LerpWeight); // Maintain current yaw
+            // Crash the plane
+            pitch = Mathf.Lerp(pitch, PitchRange, LerpWeight);
         }
 
         npcRB.MoveRotation(Quaternion.Euler(new Vector3(pitch, yaw, roll)));
@@ -80,8 +87,30 @@ public class Bomber : MonoBehaviour
 
         npcRB.AddForce(thrustForce + fwdDragForce + upDragForce + liftForce);
     }
+
+    private void TakeHit()
+    {
+        Debug.Log("Hit!");
+        _remainingHp -= DamageTakenPerHit;
+        if (_remainingHp <= 0)
+        {
+            _isCrashing = true;
+        }
+        // TODO: sounds and effects
+    }
+
+    private void OnTriggerEnter(Collider collider)
+    {
+        // TODO: sounds and effects
+        if (collider.GetComponent<BulletBehavior>() != null)
+        {
+            TakeHit();
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        // TODO: sounds and effects
+        Destroy(gameObject);
+    }
 }
-
-
-
-

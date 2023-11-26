@@ -5,13 +5,19 @@ using UnityEngine;
 public class Battleship : MonoBehaviour
 { 
     public float playerSpeed = 20f;
-    private Rigidbody2D rb;
+    private Rigidbody rb;
     private Vector3 shipDirection;
 
-    // Update is called once per frame
-    void Update()
+    void Start()
     {
-        
+        rb = GetComponent<Rigidbody>();
+       
+    }
+
+    // Update is called once per frame
+    void FixedUpdate()
+    {
+        rb.velocity = transform.forward * playerSpeed;
     }
 
 }
