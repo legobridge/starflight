@@ -168,8 +168,10 @@ public class PlayerControl : MonoBehaviour
     private void FireBullet(Vector3 position)
     {
         Ray ray = Camera.main.ScreenPointToRay(new Vector2(Screen.width / 2, Screen.height / 2));
-        var bulletPos = position + ray.direction;
-        var bullet = Instantiate(BulletPrefab, bulletPos, Quaternion.identity);
+        var bulletPos = position + ray.direction * 5;
+        var angles = transform.rotation.eulerAngles;
+        angles.x += 90;
+        var bullet = Instantiate(BulletPrefab, bulletPos, Quaternion.Euler(angles));
         bullet.GetComponent<Rigidbody>().velocity = BulletVelocity * ray.direction + playerRB.velocity;
     }
 
