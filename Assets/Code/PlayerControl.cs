@@ -1,11 +1,30 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
 /// Control code for the the player's game object.
 /// Very approximate simulation of flight dynamics.
 /// </summary>
-public class PlayerControl : MonoBehaviour {
+public class PlayerControl : MonoBehaviour
+{
+    [Header("Gun variables")]
+    /// <summary>
+    /// Cooldown period between shots
+    /// </summary>
+    public float GunCoolDownTime;
+
+    /// <summary>
+    /// Prefab of a bullet
+    /// </summary>
+    public GameObject BulletPrefab;
+
+
+    /// <summary>
+    /// Velocity of fired bullets
+    /// </summary>
+    public float BulletVelocity;
+
     /// <summary>
     /// Coefficient of draft for head winds
     /// </summary>
@@ -88,6 +107,11 @@ public class PlayerControl : MonoBehaviour {
     #endregion
 
     /// <summary>
+    /// Cooldown period between shots
+    /// </summary>
+    private float LastFireTime = 0.0f;
+
+    /// <summary>
     /// Initialize component
     /// </summary>
     internal void Start() {
@@ -100,13 +124,17 @@ public class PlayerControl : MonoBehaviour {
     /// </summary>
     /// <param name="safe">True if we won, false if we crashed</param>
     private void OnGameOver(bool safe) {
-        playerRB.velocity = Vector3.zero;
-        playerRB.useGravity = false;
-        playerRB.constraints = RigidbodyConstraints.FreezeAll;
+        var rigidBodies = FindObjectsOfType<Rigidbody>();
+        foreach (var rb in rigidBodies)
+        {
+            rb.velocity = Vector3.zero;
+            rb.useGravity = false;
+            rb.constraints = RigidbodyConstraints.FreezeAll;
+        }
         if (safe) {
             GameOverText.text = "You Win!";
         } else {
-            GameOverText.text = "OOPS";
+            GameOverText.text = "You Lose";
         }
     }
 
@@ -119,6 +147,30 @@ public class PlayerControl : MonoBehaviour {
             playerRB.velocity.magnitude,
             transform.position.y,
             thrust);
+    }
+
+    private void Update()
+    {
+        bool fireButton = Input.GetButton("Fire");
+        if (fireButton && Time.time > LastFireTime + GunCoolDownTime)
+        {
+            LastFireTime = Time.time;
+            Fire();
+        }
+    }
+
+    private void Fire()
+    {
+        FireBullet(transform.position - transform.right);
+        FireBullet(transform.position + transform.right);
+    }
+
+    private void FireBullet(Vector3 position)
+    {
+        Ray ray = Camera.main.ScreenPointToRay(new Vector2(Screen.width / 2, Screen.height / 2));
+        var bulletPos = position + ray.direction;
+        var bullet = Instantiate(BulletPrefab, bulletPos, Quaternion.identity);
+        bullet.GetComponent<Rigidbody>().velocity = BulletVelocity * ray.direction + playerRB.velocity;
     }
 
     private void FixedUpdate()
@@ -162,15 +214,6 @@ public class PlayerControl : MonoBehaviour {
 
     private void OnCollisionEnter(Collision collision)
     {
-        LandingPlatform landingPlatform = collision.collider.GetComponent<LandingPlatform>();
-        if (landingPlatform != null) 
-        { 
-            if (collision.relativeVelocity.y <= landingPlatform.MaxLandingSpeed)
-            {
-                OnGameOver(true);
-                return;
-            }
-        }
         OnGameOver(false);
     }
 }
