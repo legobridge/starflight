@@ -55,9 +55,25 @@ public class Bomber : MonoBehaviour
             if (!_reachedBattleship)
             {
                 // If target hasn't been reached yet, fly towards it
-                var rollCorrection = Mathf.Atan(localTarget.x / -localTarget.z) * Mathf.Rad2Deg;
-                float targetRoll = Mathf.Clamp(rollCorrection * 2, -RollRange, RollRange);
-                float targetPitch = Mathf.Clamp(-localTarget.y, -PitchRange, PitchRange);
+                var rollCorrection = -Mathf.Atan(localTarget.x / localTarget.z) * Mathf.Rad2Deg;
+                var pitchCorrection = 0.0f;
+                if (localTarget.z < 0)
+                {
+                    if (localTarget.x < 0)
+                    {
+                        rollCorrection = RollRange;
+                    }
+                    else
+                    {
+                        rollCorrection = -RollRange;
+                    }
+                }
+                else
+                {
+                    pitchCorrection = -Mathf.Atan(localTarget.y / localTarget.z) * Mathf.Rad2Deg;
+                }
+                float targetRoll = Mathf.Clamp(rollCorrection, -RollRange, RollRange);
+                float targetPitch = Mathf.Clamp(pitchCorrection, -PitchRange, PitchRange);
 
                 roll = Mathf.Lerp(roll, targetRoll, LerpWeight);
                 pitch = Mathf.Lerp(pitch, targetPitch, LerpWeight);
