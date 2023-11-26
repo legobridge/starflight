@@ -180,8 +180,7 @@ public class PlayerControl : MonoBehaviour
         float pitchInput = Input.GetAxis("Vertical") * PitchRange;
 
         roll = Mathf.Lerp(roll, rollInput, LerpWeight);
-        pitch = Mathf.Lerp(pitch, pitchInput, LerpWeight); 
-        
+        pitch = Mathf.Lerp(pitch, pitchInput, LerpWeight);
 
         yaw -= roll * RotationalSpeed * Time.fixedDeltaTime;
         playerRB.MoveRotation(Quaternion.Euler(pitch, yaw, roll));
