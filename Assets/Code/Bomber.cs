@@ -3,7 +3,7 @@ using UnityEngine;
 public class Bomber : MonoBehaviour
 {
 
-    public Transform target; // Assign the target in the inspector
+    //public Transform target; // Assign the target in the inspector
 
     // Aerodynamic coefficients and movement speeds
     public float ForwardDragCoefficient = 0.01f;
@@ -30,12 +30,15 @@ public class Bomber : MonoBehaviour
         npcRB.velocity = transform.forward * 3;
         _remainingHp = MaxHitPoints;
     }
-
+    
     void FixedUpdate()
     {
         if (!_isCrashing)
         {
-            Vector3 localTarget = transform.InverseTransformPoint(target.position);
+            var target = FindObjectOfType<Battleship>();
+            Vector3 modifiedTargetPosition = target.transform.position;
+            modifiedTargetPosition.y += 70;
+            Vector3 localTarget = transform.InverseTransformPoint(modifiedTargetPosition);
 
             // Check if the plane has crossed the target
             bool hasCrossedTarget = localTarget.z < 0;
