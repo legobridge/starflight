@@ -48,16 +48,32 @@ public class Bomber : MonoBehaviour
         if (!_isCrashing)
         {
             Vector3 modifiedTargetPosition = battleshipRB.transform.position;
-            modifiedTargetPosition.y += 120;
+            modifiedTargetPosition.y += 70;
             modifiedTargetPosition += battleshipRB.transform.forward * battleshipRB.velocity.magnitude * 7;
             Vector3 localTarget = transform.InverseTransformPoint(modifiedTargetPosition);
 
             if (!_reachedBattleship)
             {
                 // If target hasn't been reached yet, fly towards it
-                var rollCorrection = Mathf.Atan(localTarget.x / localTarget.z) * Mathf.Rad2Deg * 2;
+                var rollCorrection = -Mathf.Atan(localTarget.x / localTarget.z) * Mathf.Rad2Deg;
+                var pitchCorrection = 0.0f;
+                if (localTarget.z < 0)
+                {
+                    if (localTarget.x < 0)
+                    {
+                        rollCorrection = RollRange;
+                    }
+                    else
+                    {
+                        rollCorrection = -RollRange;
+                    }
+                }
+                else
+                {
+                    pitchCorrection = -Mathf.Atan(localTarget.y / localTarget.z) * Mathf.Rad2Deg;
+                }
                 float targetRoll = Mathf.Clamp(rollCorrection, -RollRange, RollRange);
-                float targetPitch = Mathf.Clamp(-localTarget.y, -PitchRange, PitchRange);
+                float targetPitch = Mathf.Clamp(pitchCorrection, -PitchRange, PitchRange);
 
                 roll = Mathf.Lerp(roll, targetRoll, LerpWeight);
                 pitch = Mathf.Lerp(pitch, targetPitch, LerpWeight);
