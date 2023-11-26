@@ -5,7 +5,7 @@ using UnityEngine.UIElements;
 public class Bomber : MonoBehaviour
 {
 
-    public Transform target; // Assign the target in the inspector
+    //public Transform target; // Assign the target in the inspector
 
     // Aerodynamic coefficients and movement speeds
     public float ForwardDragCoefficient = 0.01f;
@@ -43,7 +43,9 @@ public class Bomber : MonoBehaviour
     {
         if (!_isCrashing)
         {
-            Vector3 localTarget = transform.InverseTransformPoint(target.position);
+            Vector3 modifiedTargetPosition = battleshipRB.transform.position;
+            modifiedTargetPosition.y += 70;
+            Vector3 localTarget = transform.InverseTransformPoint(modifiedTargetPosition);
 
             if (!_hasBombDropped)
             {
