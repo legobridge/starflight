@@ -39,7 +39,6 @@ public class Bomber : MonoBehaviour
             Vector3 modifiedTargetPosition = target.transform.position;
             modifiedTargetPosition.y += 70;
             Vector3 localTarget = transform.InverseTransformPoint(modifiedTargetPosition);
-            Vector3 localTarget = transform.InverseTransformPoint(target.position);
 
             // Check if the plane has crossed the target
             bool hasCrossedTarget = localTarget.z < 0;
