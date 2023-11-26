@@ -6,7 +6,6 @@ public class Battleship : MonoBehaviour
 { 
     public float playerSpeed = 20f;
     private Rigidbody rb;
-    private Vector3 shipDirection;
 
     void Start()
     {
