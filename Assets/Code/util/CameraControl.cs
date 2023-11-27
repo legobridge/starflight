@@ -2,18 +2,13 @@
 
 public class CameraControl : MonoBehaviour {
 
-    public Transform target;
+    public Vector3 zeroThrustLocalPos = new(0, 150, -400);
+    public Vector3 fullThrustLocalPos = new(0, 150, -600);
     public float smoothing = 5f;
 
-    private Vector3 offset;
-
-	internal void Start () {
-        offset = transform.position - target.position;
-	}
 	
-	// okay so we need to use fixedupdate if we move with physics and do this in update if we move the shitty way
 	internal void FixedUpdate () {
-        Vector3 targetCamPos = target.position + offset;
-        transform.position = Vector3.Lerp(transform.position, targetCamPos, smoothing * Time.deltaTime);
+        float thrustInput = Input.GetAxis("Thrust");
+        transform.localPosition = Vector3.Lerp(zeroThrustLocalPos, fullThrustLocalPos, thrustInput);
 	}
 }
