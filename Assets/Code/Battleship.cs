@@ -6,7 +6,7 @@ public class Battleship : MonoBehaviour
     public int MaxHitPoints;
     public int DamageTakenPerHit;
 
-    public GameObject healthbar;
+    public GameObject Healthbar;
 
     public AudioClip BombHitClip;
     public float Volume;
@@ -22,13 +22,13 @@ public class Battleship : MonoBehaviour
         _audioSource = GetComponent<AudioSource>();
         _remainingHp = MaxHitPoints;
     }
-
     public void UpdateHealthBar()
     {
-        healthbar.transform.localScale = new Vector3(
-            (float) _remainingHp / (float) MaxHitPoints,
-            healthbar.transform.localScale.y,
-            healthbar.transform.localScale.z
+        float healthBarSize = Mathf.Max(0.0f, (float)_remainingHp / (float)MaxHitPoints);
+        Healthbar.transform.localScale = new Vector3(
+            healthBarSize,
+            Healthbar.transform.localScale.y,
+            Healthbar.transform.localScale.z
             );
     }
 
