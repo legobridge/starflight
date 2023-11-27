@@ -33,6 +33,8 @@ public class Bomber : MonoBehaviour
     private bool _reachedBattleship = false;
     private int _bombsLeft;
     private float _nextBombDropTime = 0.0f;
+    public AudioClip ExplosionClip;
+    public AudioSource SoundSource;
 
     void Start()
     {
@@ -120,7 +122,7 @@ public class Bomber : MonoBehaviour
         }
         else if (Time.time > _nextBombDropTime && _bombsLeft > 0)
         {
-            Debug.Log("Bomb");
+            //Debug.Log("Bomb");
             var bombPos = transform.position - 3 * transform.up;
             var bomb = Instantiate(BombPrefab, bombPos, Quaternion.Euler(100, 0, 0));
             bomb.GetComponent<Rigidbody>().velocity = npcRB.velocity;
@@ -143,6 +145,8 @@ public class Bomber : MonoBehaviour
     {
         Debug.Log("Hit!");
         _remainingHp -= DamageTakenPerHit;
+        SoundSource.enabled = true;
+        SoundSource.PlayOneShot(ExplosionClip, 2f);
         if (_remainingHp <= 0)
         {
             _isCrashing = true;
