@@ -1,10 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CarrierBehavior : MonoBehaviour
 {
-    // Start is called before the first frame update
     public GameObject BomberPrefab;
 
     /// <summary>
@@ -12,31 +9,20 @@ public class CarrierBehavior : MonoBehaviour
     /// </summary>
     public float SpawnInterval;
 
-    /// <summary>
-    /// How many units of free space to try to find around the spawned object
-    /// </summary>
-    public float FreeRadius;
-
-    /// <summary>
-    /// Check if we need to spawn and if so, do so.
-    /// </summary>
-    // ReSharper disable once UnusedMember.Local
-    public float NextSpawnTime;
-    private Rigidbody npcRB;
-    private Rigidbody battleshipRB;
+    private float _nextSpawnTime = 0;
 
     void Update()
     {
-        if (NextSpawnTime < Time.timeSinceLevelLoad)
+        if (_nextSpawnTime < Time.timeSinceLevelLoad)
         {
             var position = transform.position + transform.up * 100;
             
             
-            battleshipRB = FindObjectOfType<Battleship>().gameObject.GetComponent<Rigidbody>();
+            var battleship = FindObjectOfType<Battleship>();
 
             var bomber = Instantiate(BomberPrefab, position, Quaternion.identity);
-            bomber.transform.LookAt(battleshipRB.transform);
-            NextSpawnTime += SpawnInterval;
+            bomber.transform.LookAt(battleship.transform);
+            _nextSpawnTime += SpawnInterval;
 
         }
     }
