@@ -120,7 +120,7 @@ public class Bomber : MonoBehaviour
         }
         else if (Time.time > _nextBombDropTime && _bombsLeft > 0)
         {
-            Debug.Log("Bomb");
+            //Debug.Log("Bomb");
             var bombPos = transform.position - 3 * transform.up;
             var bomb = Instantiate(BombPrefab, bombPos, Quaternion.Euler(100, 0, 0));
             bomb.GetComponent<Rigidbody>().velocity = npcRB.velocity;
