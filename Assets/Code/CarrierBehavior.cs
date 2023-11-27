@@ -15,7 +15,7 @@ public class CarrierBehavior : MonoBehaviour
     {
         if (_nextSpawnTime < Time.timeSinceLevelLoad)
         {
-            var position = transform.position + transform.up * 100;
+            var position = transform.position + transform.up * 60;
             
             
             var battleship = FindObjectOfType<Battleship>();
