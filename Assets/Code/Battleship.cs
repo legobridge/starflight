@@ -7,6 +7,7 @@ public class Battleship : MonoBehaviour
     public float Speed;
     public int MaxHitPoints;
     public int DamageTakenPerHit;
+    public int healthEffect;
 
     private Rigidbody rb;
     private int _remainingHp;
@@ -37,6 +38,7 @@ public class Battleship : MonoBehaviour
     void TakeDamage()
     {
         UpdateHealthBar();
+        Debug.Log("HIT!!");
         
         _remainingHp -= DamageTakenPerHit;
         if (_remainingHp <= 0)
@@ -47,6 +49,14 @@ public class Battleship : MonoBehaviour
             Destroy(gameObject);
         }
         // TODO: sounds and effects
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.GetComponent<BombBehavior>())
+        {
+            TakeDamage();
+        }
     }
 
 }
