@@ -33,6 +33,8 @@ public class Bomber : MonoBehaviour
     private bool _reachedBattleship = false;
     private int _bombsLeft;
     private float _nextBombDropTime = 0.0f;
+    public AudioClip ExplosionClip;
+    public AudioSource SoundSource;
 
     void Start()
     {
@@ -143,6 +145,8 @@ public class Bomber : MonoBehaviour
     {
         Debug.Log("Hit!");
         _remainingHp -= DamageTakenPerHit;
+        SoundSource.enabled = true;
+        SoundSource.PlayOneShot(ExplosionClip, 2f);
         if (_remainingHp <= 0)
         {
             _isCrashing = true;
