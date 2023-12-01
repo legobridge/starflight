@@ -10,9 +10,9 @@ Bombers spawn from two enemy aircraft carriers, and fly towards the allied battl
 
 Your battleship has run out of ammunition and its systems have been jammed, so it is up to you to shoot down the enemy bombers as they approach the allied vessel.
 
-It takes about 10 bombs to destroy your battleship, and each bomber can successfully drop anywhere from 1 to 3 bombs on the ship.
+It takes 10 bombs to destroy your battleship, and each bomber can successfully drop anywhere from 1 to 3 bombs on the ship.
 
-Your F-35 is not being directly attacked, but if you hit a bomber or the ocean, you lose.
+Your F-35 is not being directly attacked, but if you hit a bomber, the terrain, or the ocean, you lose.
 
 ## Controls
 
