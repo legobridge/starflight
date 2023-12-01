@@ -1,0 +1,7 @@
+- Used some of the flight simulation code and terrain from exercise 7.
+- All sound effects from Pixabay
+- Rockets, Missiles, Bombs by Aurynsky
+- Explosion effect by Inguz Media
+- MobileWaterShader by EKV
+- NavyPack by EasyPoly
+- SimpleWarships by TinForge

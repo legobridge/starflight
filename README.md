@@ -1,2 +1,2 @@
 # starflight
-A spaceship pilot game
+A 3d fighter pilot game
