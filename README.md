@@ -14,6 +14,8 @@ It takes 10 bombs to destroy your battleship, and each bomber can successfully d
 
 Your F-35 is not being directly attacked, but if you hit a bomber, the terrain, or the ocean, you lose.
 
+You win if the battleship survives for 2 minutes.
+
 ## Controls
 
 ### Controller (HIGHLY Recommended) (Xbox Key Names)
